@@ -10,7 +10,7 @@ HEIGHT = 900
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-size = 15
+size = 60
 
 # [N, E, S, W]
 # 0 = www, 1 = wwb, 2 = wbw, 3 = wbb, 4 =  bww, 5 = bwb, 6 = bbw, 7 = bbb
@@ -172,7 +172,7 @@ def main():
         if not pause:
             board = wfcStep(board)
 
-        if all(all(len(board[i][j]) == 1 for j in range(len(board[0]))) for i in range(len(board))):
+        if all(all(len(board[i][j]) == 1 for j in range(len(board[0]))) for i in range(len(board))) or any(any(len(board[i][j]) == 0 for j in range(len(board[0]))) for i in range(len(board))):
             board = [[tileSet.copy() for _ in range(WIDTH//size)] for _ in range(HEIGHT//size)]
         drawBoard(screen, board)
         pygame.display.flip()

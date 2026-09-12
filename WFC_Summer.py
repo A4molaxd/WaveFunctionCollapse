@@ -12,7 +12,7 @@ size = 100
 
 # [N, E, S, W]
 # c = cliff, g = grass, r = road, w = water
-# 0 = clifff, 1 = grass, 2 = road, 3 = water, 4 = waterside, 5 = cliffb
+# 0 = cliff, 1 = grass, 2 = road, 3 = water, 4 = waterside, 5 = cliffb
 
 class State():
     def __init__(self, surf, connections):
