@@ -8,14 +8,16 @@ HEIGHT = 800
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-size = 100
+size = 40
 
 DRAW_POSSIBLE = False
 
-STEPS = 10
+STEPS = 100
 
 # [N, E, S, W]
 # 0 = empty, 1 = path
+
+#TODO: Change scale on this file (self.surf = pygame.transform.scale(...)), rather than on each separate image
 
 class State():
     def __init__(self, surf, connections, symmetry = None):
