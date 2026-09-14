@@ -141,9 +141,12 @@ def drawBoard(screen, board):
                 board[i][j][0].surf.set_alpha(100)
                 screen.blit(board[i][j][0].surf, (i*size, j*size))
             else:
-                for k in range(possibleStates):
-                    board[i][j][k].surf.set_alpha(100//possibleStates)
-                    screen.blit(board[i][j][k].surf, (i*size, j*size))
+                s = pygame.Surface((size, size))
+                pygame.Surface.fill(s, pygame.Color(200, 200, 200))
+                screen.blit(s,  (i*size, j*size))
+                # for k in range(possibleStates):
+                #     board[i][j][k].surf.set_alpha(100//possibleStates)
+                #     screen.blit(board[i][j][k].surf, (i*size, j*size))
 
 def main():
     run = True

@@ -1,64 +1,48 @@
-import pygame
-import random
-
-pygame.init()
-
-WIDTH = 800
-HEIGHT = 800
-
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-size = 100
+import WFC
 
 # [N, E, S, W]
-# c = cliff, g = grass, r = road, w = water
-# 0 = cliff, 1 = grass, 2 = road, 3 = water, 4 = waterside, 5 = cliffb
+# 0 = cliff se, 1 = grass, 2 = road, 3 = water, 4 = waterside ne, 5 = cliff nw, 6 = waterside sw, 7 = road ne, 8 = road sw
 
-class State():
-    def __init__(self, surf, connections):
-        self.surf = surf
-        self.connections = connections
-
-cliff0 = State(pygame.transform.scale(pygame.image.load('Summer/cliff 0.png'), (size, size)), [1, 0, 1, 0])
-cliff1 = State(pygame.transform.scale(pygame.image.load('Summer/cliff 1.png'), (size, size)), [0, 1, 0, 1])
-cliff2 = State(pygame.transform.scale(pygame.image.load('Summer/cliff 2.png'), (size, size)), [1, 5, 1, 5])
-cliff3 = State(pygame.transform.scale(pygame.image.load('Summer/cliff 3.png'), (size, size)), [5, 1, 5, 1])
-cliffcorner0 = State(pygame.transform.scale(pygame.image.load('Summer/cliffcorner 0.png'), (size, size)), [0, 5, 1, 1])
-cliffcorner1 = State(pygame.transform.scale(pygame.image.load('Summer/cliffcorner 1.png'), (size, size)), [5, 1, 1, 5])
-cliffcorner2 = State(pygame.transform.scale(pygame.image.load('Summer/cliffcorner 2.png'), (size, size)), [1, 1, 5, 0])
-cliffcorner3 = State(pygame.transform.scale(pygame.image.load('Summer/cliffcorner 3.png'), (size, size)), [1, 0, 0, 1])
-cliffturn0 = State(pygame.transform.scale(pygame.image.load('Summer/cliffturn 0.png'), (size, size)), [0, 0, 1, 1])
-cliffturn1 = State(pygame.transform.scale(pygame.image.load('Summer/cliffturn 1.png'), (size, size)), [0, 1, 1, 0])
-cliffturn2 = State(pygame.transform.scale(pygame.image.load('Summer/cliffturn 2.png'), (size, size)), [1, 1, 0, 5])
-cliffturn3 = State(pygame.transform.scale(pygame.image.load('Summer/cliffturn 3.png'), (size, size)), [1, 5, 5, 1])
-grass0 = State(pygame.transform.scale(pygame.image.load('Summer/grass 0.png'), (size, size)), [1, 1, 1, 1])
-grasscorner0 = State(pygame.transform.scale(pygame.image.load('Summer/grasscorner 0.png'), (size, size)), [2, 2, 2, 2])
-grasscorner1 = State(pygame.transform.scale(pygame.image.load('Summer/grasscorner 1.png'), (size, size)), [2, 2, 2, 2])
-grasscorner2 = State(pygame.transform.scale(pygame.image.load('Summer/grasscorner 2.png'), (size, size)), [2, 2, 2, 2])
-grasscorner3 = State(pygame.transform.scale(pygame.image.load('Summer/grasscorner 3.png'), (size, size)), [2, 2, 2, 2])
-road0 = State(pygame.transform.scale(pygame.image.load('Summer/road 0.png'), (size, size)), [2, 2, 1, 2])
-road1 = State(pygame.transform.scale(pygame.image.load('Summer/road 1.png'), (size, size)), [2, 1, 2, 2])
-road2 = State(pygame.transform.scale(pygame.image.load('Summer/road 2.png'), (size, size)), [1, 2, 2, 2])
-road3 = State(pygame.transform.scale(pygame.image.load('Summer/road 3.png'), (size, size)), [2, 2, 2, 1])
-roadturn0 = State(pygame.transform.scale(pygame.image.load('Summer/roadturn 0.png'), (size, size)), [2, 2, 1, 1])
-roadturn1 = State(pygame.transform.scale(pygame.image.load('Summer/roadturn 1.png'), (size, size)), [2, 1, 1, 2])
-roadturn2 = State(pygame.transform.scale(pygame.image.load('Summer/roadturn 2.png'), (size, size)), [1, 1, 2, 2])
-roadturn3 = State(pygame.transform.scale(pygame.image.load('Summer/roadturn 3.png'), (size, size)), [1, 2, 2, 1])
-water0 = State(pygame.transform.scale(pygame.image.load('Summer/water_a 0.png'), (size, size)), [3, 3, 3, 3])
-water1 = State(pygame.transform.scale(pygame.image.load('Summer/water_b 0.png'), (size, size)), [3, 3, 3, 3])
-water2 = State(pygame.transform.scale(pygame.image.load('Summer/water_c 0.png'), (size, size)), [3, 3, 3, 3])
-watercorner0 = State(pygame.transform.scale(pygame.image.load('Summer/watercorner 0.png'), (size, size)), [4, 4, 1, 1])
-watercorner1 = State(pygame.transform.scale(pygame.image.load('Summer/watercorner 1.png'), (size, size)), [4, 1, 1, 4])
-watercorner2 = State(pygame.transform.scale(pygame.image.load('Summer/watercorner 2.png'), (size, size)), [1, 1, 4, 4])
-watercorner3 = State(pygame.transform.scale(pygame.image.load('Summer/watercorner 3.png'), (size, size)), [1, 4, 4, 1])
-waterside0 = State(pygame.transform.scale(pygame.image.load('Summer/waterside 0.png'), (size, size)), [3, 4, 1, 4])
-waterside1 = State(pygame.transform.scale(pygame.image.load('Summer/waterside 1.png'), (size, size)), [4, 1, 4, 3])
-waterside2 = State(pygame.transform.scale(pygame.image.load('Summer/waterside 2.png'), (size, size)), [1, 4, 3, 4])
-waterside3 = State(pygame.transform.scale(pygame.image.load('Summer/waterside 3.png'), (size, size)), [4, 3, 4, 1])
-waterturn0 = State(pygame.transform.scale(pygame.image.load('Summer/waterturn 0.png'), (size, size)), [3, 3, 4, 4])
-waterturn1 = State(pygame.transform.scale(pygame.image.load('Summer/waterturn 1.png'), (size, size)), [3, 4, 4, 3])
-waterturn2 = State(pygame.transform.scale(pygame.image.load('Summer/waterturn 2.png'), (size, size)), [4, 4, 3, 3])
-waterturn3 = State(pygame.transform.scale(pygame.image.load('Summer/waterturn 3.png'), (size, size)), [4, 3, 3, 4])
+cliff0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliff 0.png'), (WFC.size, WFC.size)), [1, 0, 1, 0])
+cliff1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliff 1.png'), (WFC.size, WFC.size)), [0, 1, 0, 1])
+cliff2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliff 2.png'), (WFC.size, WFC.size)), [1, 5, 1, 5])
+cliff3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliff 3.png'), (WFC.size, WFC.size)), [5, 1, 5, 1])
+cliffcorner0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffcorner 0.png'), (WFC.size, WFC.size)), [0, 5, 1, 1])
+cliffcorner1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffcorner 1.png'), (WFC.size, WFC.size)), [5, 1, 1, 5])
+cliffcorner2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffcorner 2.png'), (WFC.size, WFC.size)), [1, 1, 5, 0])
+cliffcorner3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffcorner 3.png'), (WFC.size, WFC.size)), [1, 0, 0, 1])
+cliffturn0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffturn 0.png'), (WFC.size, WFC.size)), [5, 0, 1, 1])
+cliffturn1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffturn 1.png'), (WFC.size, WFC.size)), [0, 1, 1, 0])
+cliffturn2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffturn 2.png'), (WFC.size, WFC.size)), [1, 1, 0, 5])
+cliffturn3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/cliffturn 3.png'), (WFC.size, WFC.size)), [1, 5, 5, 1])
+grass0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/grass 0.png'), (WFC.size, WFC.size)), [1, 1, 1, 1])
+grasscorner0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/grasscorner 0.png'), (WFC.size, WFC.size)), [7, 7, 2, 2])
+grasscorner1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/grasscorner 1.png'), (WFC.size, WFC.size)), [8, 2, 2, 7])
+grasscorner2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/grasscorner 2.png'), (WFC.size, WFC.size)), [2, 2, 8, 8])
+grasscorner3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/grasscorner 3.png'), (WFC.size, WFC.size)), [2, 8, 7, 2])
+road0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/road 0.png'), (WFC.size, WFC.size)), [2, 8, 1, 8])
+road1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/road 1.png'), (WFC.size, WFC.size)), [7, 1, 7, 2])
+road2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/road 2.png'), (WFC.size, WFC.size)), [1, 7, 2, 7])
+road3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/road 3.png'), (WFC.size, WFC.size)), [8, 2, 8, 1])
+roadturn0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/roadturn 0.png'), (WFC.size, WFC.size)), [8, 8, 1, 1])
+roadturn1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/roadturn 1.png'), (WFC.size, WFC.size)), [7, 1, 1, 8])
+roadturn2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/roadturn 2.png'), (WFC.size, WFC.size)), [1, 1, 7, 7])
+roadturn3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/roadturn 3.png'), (WFC.size, WFC.size)), [1, 7, 8, 1])
+water0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/water_a 0.png'), (WFC.size, WFC.size)), [3, 3, 3, 3])
+water1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/water_b 0.png'), (WFC.size, WFC.size)), [3, 3, 3, 3])
+water2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/water_c 0.png'), (WFC.size, WFC.size)), [3, 3, 3, 3])
+watercorner0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/watercorner 0.png'), (WFC.size, WFC.size)), [4, 4, 1, 1])
+watercorner1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/watercorner 1.png'), (WFC.size, WFC.size)), [6, 1, 1, 4])
+watercorner2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/watercorner 2.png'), (WFC.size, WFC.size)), [1, 1, 6, 6])
+watercorner3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/watercorner 3.png'), (WFC.size, WFC.size)), [1, 6, 4, 1])
+waterside0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterside 0.png'), (WFC.size, WFC.size)), [3, 4, 1, 4])
+waterside1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterside 1.png'), (WFC.size, WFC.size)), [6, 1, 6, 3])
+waterside2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterside 2.png'), (WFC.size, WFC.size)), [1, 6, 3, 6])
+waterside3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterside 3.png'), (WFC.size, WFC.size)), [4, 3, 4, 1])
+waterturn0 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterturn 0.png'), (WFC.size, WFC.size)), [3, 3, 4, 4])
+waterturn1 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterturn 1.png'), (WFC.size, WFC.size)), [3, 4, 6, 3])
+waterturn2 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterturn 2.png'), (WFC.size, WFC.size)), [6, 6, 3, 3])
+waterturn3 = WFC.State(WFC.pygame.transform.scale(WFC.pygame.image.load('Summer/waterturn 3.png'), (WFC.size, WFC.size)), [4, 3, 3, 6])
 
 tileSet = []
 
@@ -103,121 +87,5 @@ tileSet.append(waterturn1)
 tileSet.append(waterturn2)
 tileSet.append(waterturn3)
 
-def wfcStep(board):
-    newBoard = board.copy()
-    if all(all(len(board[i][j]) == 1 for j in range(len(board[0]))) for i in range(len(board))):
-        #print("finished")
-        return True, board
-
-    mini = random.randrange(0, len(board))
-    minj = random.randrange(0, len(board[0]))
-    minimum = len(board[mini][minj])
-    while len(board[mini][minj]) == 1:
-        mini = random.randrange(0, len(board))
-        minj = random.randrange(0, len(board[0]))
-        minimum = len(board[mini][minj])
-
-    for i in range(len(board)):
-        for j in range(len(board[0])):
-            if len(board[i][j]) == 1:
-                continue
-            if len(board[i][j]) < minimum:
-                minimum = len(board[i][j])
-                mini = i
-                minj = j
-    if minimum == 0:
-        #print("imposible")
-        return False, board
-    
-    newBoard[mini][minj] = [random.choice(board[mini][minj])]
-
-    # north
-    if minj > 0:
-        if len(board[mini][minj - 1]) != 1:
-            rem = []
-            for k in board[mini][minj - 1]:
-                if k.connections[2] != newBoard[mini][minj][0].connections[0]:
-                    rem.append(k)
-            for i in rem:
-                newBoard[mini][minj - 1].remove(i)
-    
-    # west
-    if mini > 0:
-        if len(board[mini - 1][minj]) != 1:
-            rem = []
-            for k in board[mini - 1][minj]:
-                if k.connections[1] != newBoard[mini][minj][0].connections[3]:
-                    rem.append(k)
-            for i in rem:
-                newBoard[mini - 1][minj].remove(i)
-
-    # south
-    if minj < len(board[0]) - 1:
-        if len(board[mini][minj + 1]) != 1:
-            rem = []
-            for k in board[mini][minj + 1]:
-                if k.connections[0] != newBoard[mini][minj][0].connections[2]:
-                    rem.append(k)
-            for i in rem:
-                newBoard[mini][minj + 1].remove(i)
-
-    # east
-    if mini < len(board) - 1:
-        if len(board[mini + 1][minj]) != 1:
-            rem = []
-            for k in board[mini + 1][minj]:
-                if k.connections[3] != newBoard[mini][minj][0].connections[1]:
-                    rem.append(k)
-            for i in rem:
-                newBoard[mini + 1][minj].remove(i)
-    
-    return True, newBoard
-
-def drawBoard(screen, board):
-    for i in range(len(board)):
-        for j in range(len(board[i])):
-            possibleStates = len(board[i][j])
-            if possibleStates == 1:
-                board[i][j][0].surf.set_alpha(100)
-                screen.blit(board[i][j][0].surf, (i*size, j*size))
-            else:
-                for k in range(possibleStates):
-                    board[i][j][k].surf.set_alpha(100//possibleStates)
-                    screen.blit(board[i][j][k].surf, (i*size, j*size))
-
-def main():
-    run = True
-
-    clock = pygame.time.Clock()
-
-    board = [[tileSet.copy() for _ in range(WIDTH//size)] for _ in range(HEIGHT//size)]
-
-    pause = False
-
-    while run:
-        pygame.display.set_caption("Wave Function Collapse Algorithm        || FPS: " + str(clock.get_fps()))
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                run = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                possible, board = wfcStep(board)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                pause = not pause
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                board = [[tileSet.copy() for _ in range(WIDTH//size)] for _ in range(HEIGHT//size)]
-
-        screen.fill((50, 50, 50))
-        if not pause:
-            for _ in range(1):
-                possible, board = wfcStep(board)
-                if not possible:
-                    board = [[tileSet.copy() for _ in range(WIDTH//size)] for _ in range(HEIGHT//size)]
-        if all(all(len(board[i][j]) == 1 for j in range(len(board[0]))) for i in range(len(board))):
-            board = [[tileSet.copy() for _ in range(WIDTH//size)] for _ in range(HEIGHT//size)]
-        drawBoard(screen, board)
-        pygame.display.flip()
-        clock.tick(60)
-
 if __name__ == '__main__':
-    main()
+    WFC.main(tileSet)
