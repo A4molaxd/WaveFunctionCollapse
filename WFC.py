@@ -20,28 +20,35 @@ STEPS = 100
 #TODO: Change scale on this file (self.surf = pygame.transform.scale(...)), rather than on each separate image
 
 class State():
-    def __init__(self, surf, connections, symmetry = None):
-        self.surf = surf
+    def __init__(self, connections, img = None, surf = None):
+        self.surf = surf if surf != None else pygame.transform.scale(pygame.image.load(img), (size, size))
         self.connections = connections
-        self.symmetry = symmetry
     
-    def createSymmetries(self):
-        l = [State(self.surf, self.connections, self.symmetry)]
-        
-        if self.symmetry == "X":
-            pass
-        elif self.symmetry == "L":
-            l.append(State(pygame.transform.rotate(self.surf, 90),  [self.connections[1], self.connections[2], int("".join(list(bin(self.connections[3])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2)], self.symmetry))
-            l.append(State(pygame.transform.rotate(self.surf, 180), [self.connections[2], self.connections[3], int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2)], self.symmetry))
-            l.append(State(pygame.transform.rotate(self.surf, 270), [self.connections[3], self.connections[0], int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[2])[2:].zfill(3)[::-1])), 2)], self.symmetry))
-        elif self.symmetry == "T": 
-            l.append(State(pygame.transform.rotate(self.surf, 90),  [self.connections[1], self.connections[2], self.connections[3], self.connections[0]], self.symmetry))
-            l.append(State(pygame.transform.rotate(self.surf, 180), [int("".join(list(bin(self.connections[2])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[3])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2)], self.symmetry))
-            l.append(State(pygame.transform.rotate(self.surf, 270), [int("".join(list(bin(self.connections[3])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[2])[2:].zfill(3)[::-1])), 2)], self.symmetry))
-        elif self.symmetry == "I":
-            l.append(State(pygame.transform.rotate(self.surf, 90), self.connections, self.symmetry))
-        elif self.symmetry == "/":
-             l.append(State(pygame.transform.rotate(self.surf, 90), [self.connections[1], self.connections[2], self.connections[3], self.connections[0]], self.symmetry))
+    def createSymmetries(self, symmetry, symmetryMode = 1):
+        l = [self]
+        if symmetryMode == 3:
+            if symmetry == "X":
+                pass
+            elif symmetry == "L":
+                l.append(State([self.connections[1], self.connections[2], int("".join(list(bin(self.connections[3])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2)], surf = pygame.transform.rotate(self.surf, 90)))
+                l.append(State([self.connections[2], self.connections[3], int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2)], surf = pygame.transform.rotate(self.surf, 180)))
+                l.append(State([self.connections[3], self.connections[0], int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[2])[2:].zfill(3)[::-1])), 2)], surf = pygame.transform.rotate(self.surf, 270)))
+            elif symmetry == "T": 
+                l.append(State([self.connections[(i+1) % 4] for i in range(4)], surf = pygame.transform.rotate(self.surf, 90)))
+                l.append(State([int("".join(list(bin(self.connections[2])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[3])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2)], surf = pygame.transform.rotate(self.surf, 180)))
+                l.append(State([int("".join(list(bin(self.connections[3])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[0])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[1])[2:].zfill(3)[::-1])), 2), int("".join(list(bin(self.connections[2])[2:].zfill(3)[::-1])), 2)], surf = pygame.transform.rotate(self.surf, 270)))
+            elif symmetry == "I":
+                l.append(State(self.connections, surf = pygame.transform.rotate(self.surf, 90)))
+            elif symmetry == "/":
+                l.append(State([self.connections[(i+1) % 4] for i in range(4)], surf = pygame.transform.rotate(self.surf, 90)))
+        else:
+            if symmetry == "X":
+                pass
+            if symmetry == "L":
+                for j in range(3):
+                    l.append(State([self.connections[(i+j+1) % 4] for i in range(4)], surf = pygame.transform.rotate(self.surf, 90*(j+1))))
+            if symmetry == "I":
+                l.append(State([self.connections[(i+1) % 4] for i in range(4)], surf = pygame.transform.rotate(self.surf, 90)))
         return l
 
 def wfcStep(board):
